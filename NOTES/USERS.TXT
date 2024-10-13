@@ -1,0 +1,28 @@
+/*
+    "data": {
+        "_id": "6704181ce0e28fa1d1874bb2",
+        "username": "one",
+        "email": "one@gmail.com",
+        "profilePicture": "https://res.cloudinary.com/dvdhmdoze/image/upload/v1728354208/gcnvcizaqnvqzynjw37b.jpg",
+        "bio": "One LOve",
+        "followers": [],
+        "following": [],
+        "posts": []
+    },
+
+    TWO:-
+    "data": {
+        "_id": "6704e9364280b586a3d40507",
+        "username": "two",
+        "email": "two@gmail.com",
+        "profilePicture": "",
+        "bio": "",
+        "followers": [],
+        "following": [],
+        "posts": []
+    },
+
+
+
+
+*/
