@@ -166,3 +166,72 @@ export const addComment = async (req,res)=>{
         throw new ApiError(404, "cant add comment")
     }   
 }
+
+export const getPostComment = async (req,res)=>{
+    try {
+        const postId = req.params.id
+        const comments = await Comment.find({post:postId}).populate('author', 'username, profilePicture')
+        
+        if(!comments) throw new ApiError(404, "comments not found!");
+
+        return res.status(200).json( new ApiResponse(200, comments, "Comments successfully fetched!"))
+
+    } catch (error) {
+        console.log("Error is "+error);
+        throw new ApiError(404, "cant get comment")
+    }
+}
+
+export const deletePost = async(req,res)=>{
+    try {
+        const postId = req.params.id
+        const authorId = req.id
+        const post = await Post.findById(postId)
+        if(!post) throw new ApiError(404, "Post not found!")
+        
+        //CHECK IF THE LOGGEDIN USER IS THE POST'S OWNER, SO ONLY THE OWNER CAN DELETE THE POST
+        if(post.author.toString()!=authorId) throw new ApiError(403, "Unauthorised to perfom the action!")
+        await Post.findByIdAndDelete(postId)
+        //REMOVE THE POST IN THE USER MODEL AS WELL BECAUSE WHILE DISPLAYING, WE WILL HAVE USERID BUT NO POST therefore REMOVING ID FROM USER AS WELL
+
+        let user = await User.findById(authorId)
+        user.posts = user.posts.filter(id == id.toString() !=postId) //USER.POSTS IS AN ARRAY
+        await user.save()
+
+        //DELETING THE POST'S COMMENTS
+        await Comment.deleteMany({post:postId})
+
+        return res.status(200)
+        .json(200, {},"Post and comments of the post successfully deleted")
+    } catch (error) {
+        console.log("Error is "+error);
+        throw new ApiError(404, "Something went wrong, can't delete post!")
+    }
+}
+
+export const bookmarkPost = async(req,res)=>{
+    try {
+        //2 THINGS TO BE KEPT IN MIND, WHAT ARE YOU BOOKMARKING AND WHO IS DOING IT
+        const postId = req.params.id
+        const authorId = req.id
+        const post = await Post.findById(postId)
+        if(!post) throw new ApiError(404, "Post not found!");
+        const user = await User.findById(authorId)
+        if(!user.bookmarks.includes(post._id)){
+            //ALREADY BOOKMARK EXISTS, remove from bookmark
+            await user.updateOne({$pull:{bookmarks:post._id}})
+            await user.save()
+            return res.status(200)
+            .json(new ApiResponse(200, {},"Unbookmarked successfully"))
+        }else{
+            // DO BOOKMARK
+            await user.updateOne({$addToSet:{bookmarks:post._id}})
+            await user.save()
+            return res.status(200)
+            .json(new ApiResponse(200, {}," Post bookmarked successfully"))
+        }
+    } catch (error) {
+        console.log("Error is "+error);
+        throw new ApiError(404, "Something went wrong, can't bookmark post!")
+    }
+}
