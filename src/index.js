@@ -3,6 +3,7 @@ import {app} from './app.js'
 import mongoose from "mongoose"
 dotenv.config({});
 import userRoute from './ROUTES/user.routes.js'
+import postRoute from'./ROUTES/post.routes.js'
 
 const connectDB = async()=>{
     try {
@@ -30,4 +31,4 @@ connectDB()
 
 
     app.use("/api/v1/user", userRoute)
-    
+    app.use("/api/v1/post", postRoute)
