@@ -50,7 +50,6 @@ export const addNewPost = async(req,res)=>{
     }
 }
 
-
 export const getAllPosts = async(req,res)=>{ //to get all posts and display on the main homepage
     try {
         const post = await Post.find().sort({createdAt:-1}).populate({path:"author", select:'username, profilePicture'}).populate(
