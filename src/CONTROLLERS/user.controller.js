@@ -60,6 +60,7 @@ export const login = async (req,res)=>{
         //IF EMAIL&&PASSWORD IS CORRECT GENERATE TOKENS FOR AUTH
         const token = jwt.sign({userId: user._id}, process.env.SECRET_KEY,{expiresIn: '1d'} )
         
+        // POPULATE EACH USER WITH THE POSTS
         user = {
             _id:user._id, // _id is the way the mongodb stores the details"_id"
             username:user.username,
